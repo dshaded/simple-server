@@ -24,6 +24,8 @@ add_executable(server
         source/TcpServer.cpp
         include/TcpServer.hpp
         include/TcpServerTemplate.hpp
+        source/Params.cpp
+        include/Params.hpp
 )
 target_include_directories(server PRIVATE include)
 target_compile_options(server PRIVATE ${COMMON_COMPILE_OPTIONS})
@@ -32,10 +34,10 @@ set_target_properties(server PROPERTIES CXX_STANDARD 20)
 # Downloadable dependencies
 include(cmake/CPM.cmake)
 
-set(BOOST_INCLUDE_LIBRARIES "asio" "crc")
+set(BOOST_INCLUDE_LIBRARIES "asio" "crc" "program_options")
 CPMAddPackage(
         NAME Boost
         URL "https://github.com/boostorg/boost/releases/download/boost-1.87.0/boost-1.87.0-cmake.tar.xz"
         OPTIONS "BOOST_ENABLE_CMAKE ON"
 )
-target_link_libraries(server PRIVATE Boost::asio Boost::crc)
+target_link_libraries(server PRIVATE Boost::asio Boost::crc Boost::program_options)
