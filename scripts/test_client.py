@@ -23,12 +23,24 @@ def send(sock, cmd_id: int, data: bytes):
     checksum = crc16_arc(full_data)
     sock.send(head + full_data + checksum)
 
+def send_test_data(sock):
+    send(sock, 1,b'\x0BABCDE-12345')
+    send(sock, 2,b'\x0A')
+    send(sock, 3,b'\x01\x00\x10')
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('127.0.0.1', 12345))
-while True:
-    send(s, 1,b'\x0BABCDE-12345')
-    send(s, 2,b'\x0A')
-    send(s, 3,b'\x01\x00\x10')
-    sleep(1)
+def send_with_period(period, port):
+    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    s.connect(('127.0.0.1', port))
+    while True:
+        send_test_data(s)
+        sleep(period)
 
+def send_bursts(burst_size, port):
+    while True:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect(('127.0.0.1', port))
+            for i in range(burst_size):
+                send_test_data(s)
+
+# send_bursts(100, 12345)
+send_with_period(1, 12345)
