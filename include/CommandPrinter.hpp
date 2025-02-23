@@ -3,6 +3,11 @@
 #include <iostream>
 #include <string>
 
+/**
+ * A simple command handler that prints the received command id and data to the provided stream.
+ *
+ * See PacketParser and CommandHandlerConcept for more details.
+ */
 class CommandPrinter
 {
     std::ostream &stream_;

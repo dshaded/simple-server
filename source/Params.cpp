@@ -7,7 +7,7 @@ namespace po = boost::program_options;
 
 Params::Params(int argc, char* argv[])
 {
-    // Define options
+    // Define options and provide help text
     po::options_description desc("Allowed options");
     desc.add_options()
         ("help,h", "Show help message")
