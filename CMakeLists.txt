@@ -20,8 +20,8 @@ add_executable(server
         source/main.cpp
         include/TcpServer.hpp
         include/PacketParser.hpp
-        include/PacketPrinter.hpp
-        source/PacketPrinter.cpp
+        include/CommandPrinter.hpp
+        source/CommandPrinter.cpp
         include/Params.hpp
         source/Params.cpp
 )

@@ -10,13 +10,13 @@
 /**
  * A concept describing an object that can receive and process data packets parsed by the PacketParser.
  *
- * Required to have one member function named handle_packet_N per every known packet type.
+ * Required to have one member function named handle_command_N per every known packet type.
  */
 template <typename Handler>
-concept PacketHandlerConcept = requires(Handler h, std::string str_data, uint8_t u8_data, uint16_t u16_data) {
-    { h.handle_packet_1(str_data) } -> std::same_as<void>;
-    { h.handle_packet_2(u8_data) } -> std::same_as<void>;
-    { h.handle_packet_3(u16_data, u8_data) } -> std::same_as<void>;
+concept CommandHandlerConcept = requires(Handler h, std::string str_data, uint8_t u8_data, uint16_t u16_data) {
+    { h.handle_command_1(str_data) } -> std::same_as<void>;
+    { h.handle_command_2(u8_data) } -> std::same_as<void>;
+    { h.handle_command_3(u16_data, u8_data) } -> std::same_as<void>;
 };
 
 /**
@@ -25,10 +25,10 @@ concept PacketHandlerConcept = requires(Handler h, std::string str_data, uint8_t
  * Can be used as a handler object for tcp_server::TcpServer. A separate instance must be created for every client
  * connection by a factory object or function.
  *
- * @tparam PacketHandler the next handler type that will process parsed data. See the concept for the concrete
+ * @tparam CommandHandler the next handler type that will process parsed data. See the concept for the concrete
  * function signatures.
  */
-template <PacketHandlerConcept PacketHandler>
+template <CommandHandlerConcept CommandHandler>
 class PacketParser
 {
     enum class ParserState
@@ -53,7 +53,7 @@ class PacketParser
     // current protocol technically allows zero-length data, but currently every command uses at least one byte
     static constexpr unsigned int min_data_length = 1;
 
-    PacketHandler& handler_;
+    CommandHandler& handler_;
     std::deque<char> buffer_{};
     ParserState state_ = ParserState::header;
     int cmd_id_ = 0;
@@ -109,7 +109,7 @@ class PacketParser
     }
 
     // Parse the received data and call an appropriate handler_ method.
-    ParserState handle_packet_()
+    ParserState handle_command_()
     {
         switch (cmd_id_)
         {
@@ -117,20 +117,20 @@ class PacketParser
             {
                 const auto data_start = buffer_.cbegin() + data_pos;
                 auto data_1 = std::string(data_start + 1, data_start + data_length_);
-                handler_.handle_packet_1(data_1);
+                handler_.handle_command_1(data_1);
                 break;
             }
         case 2: // data_u8
             {
                 auto data_2 = static_cast<uint8_t>(buffer_[data_pos]);
-                handler_.handle_packet_2(data_2);
+                handler_.handle_command_2(data_2);
                 break;
             }
         case 3: // data_u16 data_u8
             {
                 auto data_3_1 = read_uint16_(data_pos);
                 auto data_3_2 = static_cast<uint8_t>(buffer_[data_pos + 2]);
-                handler_.handle_packet_3(data_3_1, data_3_2);
+                handler_.handle_command_3(data_3_1, data_3_2);
                 break;
             }
         default:
@@ -180,7 +180,7 @@ class PacketParser
         case ParserState::crc:
             return check_crc_();
         case ParserState::handle:
-            return handle_packet_();
+            return handle_command_();
         case ParserState::fail:
             return fail_packet_();
         default:
@@ -195,7 +195,7 @@ public:
      * @param handler the next handler object that will process parsed data. See the concept for the concrete
      * function signatures. May be shared between multiple parser instances.
      */
-    explicit PacketParser(PacketHandler& handler) : handler_(handler) {}
+    explicit PacketParser(CommandHandler& handler) : handler_(handler) {}
 
     /**
      * This function is responsible for reconstructing the packets from (potentially fragmented) sequences of bytes,

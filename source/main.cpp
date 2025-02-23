@@ -3,7 +3,7 @@
 #include <string>
 
 #include <PacketParser.hpp>
-#include <PacketPrinter.hpp>
+#include <CommandPrinter.hpp>
 #include <TcpServer.hpp>
 
 #include "Params.hpp"
@@ -18,8 +18,8 @@ int main(int argc, char* argv[]) {
 
         boost::asio::io_context io_context;
 
-        auto printer = PacketPrinter(std::cout);
-        auto factory = [&printer] { return std::make_unique<PacketParser<PacketPrinter>>(printer); };
+        auto printer = CommandPrinter(std::cout);
+        auto factory = [&printer] { return std::make_unique<PacketParser<CommandPrinter>>(printer); };
         auto server = tcp_server::TcpServer<decltype(factory), 256>(io_context, factory, params.port);
 
         std::cerr << "Server listening on port " << server.port() << '\n';
