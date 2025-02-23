@@ -18,14 +18,12 @@ set(COMMON_COMPILE_OPTIONS
 # Main application
 add_executable(server
         source/main.cpp
-        include/PacketPrintHandler.hpp
-        include/PacketParser.hpp
-        source/PacketPrintHandler.cpp
-        source/TcpServer.cpp
         include/TcpServer.hpp
-        include/TcpServerTemplate.hpp
-        source/Params.cpp
+        include/PacketParser.hpp
+        include/PacketPrinter.hpp
+        source/PacketPrinter.cpp
         include/Params.hpp
+        source/Params.cpp
 )
 target_include_directories(server PRIVATE include)
 target_compile_options(server PRIVATE ${COMMON_COMPILE_OPTIONS})

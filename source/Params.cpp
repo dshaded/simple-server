@@ -21,7 +21,7 @@ Params::Params(int argc, char* argv[])
     // Handle help request
     if (vm.contains("help"))
     {
-        std::cout << desc << std::endl;
+        std::cout << desc << '\n';
         no_run = true;
     }
 
@@ -29,6 +29,8 @@ Params::Params(int argc, char* argv[])
     if (port < 0 || port > 65535)
     {
         std::cerr << "Error: Invalid port number.\n";
-        std::cerr << desc << std::endl;
+        std::cerr << desc << '\n';
+        no_run = true;
+        invalid = true;
     }
 }
