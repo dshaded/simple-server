@@ -12,17 +12,17 @@ namespace tcp_server
     namespace placeholders = boost::asio::placeholders;
 
     template <typename Fct>
-    concept HandlerFactory = requires(Fct f, std::span<char> data) {
+    concept BufferHandlerFactory = requires(Fct f, std::span<char> data) {
         // { f() } -> std::same_as<std::unique_ptr<std::remove_pointer<std::invoke_result_t<Fct>>>>;
         { (*f())(data) } -> std::same_as<void>;
     };
 
-    template <HandlerFactory Factory, int receive_buffer_size>
+    template <BufferHandlerFactory Factory, int receive_buffer_size>
     class TcpServer
     {
         tcp::acceptor acceptor_;
         Factory& factory_;
-        using HandlerType = typename std::remove_reference<decltype(*factory_())>::type;
+        using BufferHandlerType = typename std::remove_reference<decltype(*factory_())>::type;
 
     public:
         TcpServer(boost::asio::io_context& io_context, Factory& handlerFactory, ip::port_type port) :
@@ -55,10 +55,10 @@ namespace tcp_server
         struct Session : std::enable_shared_from_this<Session>
         {
             tcp::socket socket_;
-            std::unique_ptr<HandlerType> handler_;
+            std::unique_ptr<BufferHandlerType> handler_;
             std::array<char, receive_buffer_size> buffer_;
 
-            Session(tcp::socket&& socket, std::unique_ptr<HandlerType> handler) :
+            Session(tcp::socket&& socket, std::unique_ptr<BufferHandlerType> handler) :
                 socket_{std::move(socket)}, handler_{std::move(handler)}, buffer_{}
             {
             }
