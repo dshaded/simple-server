@@ -1,12 +1,21 @@
 #pragma once
 
 #include <boost/crc.hpp>
+#include <concepts>
 #include <cstdint>
 #include <deque>
 #include <span>
 #include <string>
 
-template <typename PacketHandler>
+template <typename Handler>
+concept PacketHandlerConcept =
+    requires(Handler h, std::string data_1, uint8_t data_2, uint16_t data_3_1, uint8_t data_3_2) {
+        { h.handle_packet_1(data_1) } -> std::same_as<void>;
+        { h.handle_packet_2(data_2) } -> std::same_as<void>;
+        { h.handle_packet_3(data_3_1, data_3_2) } -> std::same_as<void>;
+    };
+
+template <PacketHandlerConcept PacketHandler>
 class PacketParser
 {
     enum class ParserState
