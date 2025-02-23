@@ -15,9 +15,6 @@ CPMAddPackage(
         URL "https://github.com/boostorg/boost/releases/download/boost-1.87.0/boost-1.87.0-cmake.tar.xz"
         OPTIONS "BOOST_ENABLE_CMAKE ON"
 )
-# Catch2
-CPMAddPackage("gh:catchorg/Catch2@3.4.0")
-list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 
 # Options working for GCC and CLang. MSVC will require a special treatment or a CMake preset.
 set(COMMON_COMPILE_OPTIONS
@@ -43,14 +40,19 @@ target_compile_options(server PRIVATE ${COMMON_COMPILE_OPTIONS})
 target_link_libraries(server PRIVATE Boost::asio Boost::crc Boost::program_options)
 set_target_properties(server PROPERTIES CXX_STANDARD 20)
 
-# Tests
+# Tests todo - move to a separate CMakeLists, extract a static library from the main app
+# Catch2
+CPMAddPackage("gh:catchorg/Catch2@3.4.0")
+list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
+
 add_executable(tests
         tests/PacketParserTest.cpp
+        include/CommandHandlerStub.hpp
 )
-target_include_directories(server PRIVATE include)
-target_compile_options(server PRIVATE ${COMMON_COMPILE_OPTIONS})
+target_include_directories(tests PRIVATE include)
+target_compile_options(tests PRIVATE ${COMMON_COMPILE_OPTIONS})
 target_link_libraries(tests PRIVATE Catch2::Catch2WithMain Boost::asio Boost::crc)
-set_target_properties(server PROPERTIES CXX_STANDARD 20)
+set_target_properties(tests PROPERTIES CXX_STANDARD 20)
 
 # Integrate Catch with CTest
 include(CTest)
