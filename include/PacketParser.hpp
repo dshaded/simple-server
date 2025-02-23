@@ -14,7 +14,7 @@
  */
 template <typename Handler>
 concept CommandHandlerConcept = requires(Handler h, std::string str_data, uint8_t u8_data, uint16_t u16_data) {
-    { h.handle_command_1(str_data) } -> std::same_as<void>;
+    { h.handle_command_1(std::move(str_data)) } -> std::same_as<void>;
     { h.handle_command_2(u8_data) } -> std::same_as<void>;
     { h.handle_command_3(u16_data, u8_data) } -> std::same_as<void>;
 };
@@ -117,7 +117,7 @@ class PacketParser
             {
                 const auto data_start = buffer_.cbegin() + data_pos;
                 auto data_1 = std::string(data_start + 1, data_start + data_length_);
-                handler_.handle_command_1(data_1);
+                handler_.handle_command_1(std::move(data_1));
                 break;
             }
         case 2: // data_u8

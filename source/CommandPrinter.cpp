@@ -4,7 +4,7 @@
 
 CommandPrinter::CommandPrinter(std::ostream& stream) : stream_{stream} {}
 
-void CommandPrinter::handle_command_1(const std::string& data_1) const
+void CommandPrinter::handle_command_1(const std::string &data_1) const
 {
     stream_ << std::format("{:#06x} {}\n", 1, data_1);
 }
