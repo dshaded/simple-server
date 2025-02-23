@@ -25,10 +25,10 @@ def send(sock, cmd_id: int, data: bytes):
 
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-s.connect(('127.0.0.1', 34687))
+s.connect(('127.0.0.1', 12345))
 while True:
-    send(s, 1,b'\x0BABCDE 12345')
+    send(s, 1,b'\x0BABCDE-12345')
     send(s, 2,b'\x0A')
     send(s, 3,b'\x01\x00\x10')
-    sleep(5)
+    sleep(1)
 

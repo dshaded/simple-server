@@ -11,7 +11,7 @@ set(COMMON_COMPILE_OPTIONS
         "-Wall"
         "-Wextra"
         "-Werror"
-        "$<$<CONFIG:RELEASE>:-O3>"
+        "$<$<CONFIG:Release>:-O3>"
         "$<$<CONFIG:Debug>:-O0>"
 )
 
