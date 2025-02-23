@@ -116,11 +116,11 @@ namespace tcp_server
             // Some data was received into the buffer_ - pass it to the handler.
             void do_read(boost::system::error_code ec, std::size_t length)
             {
+                (*handler_)(std::span(buffer_.data(), length));
                 // if the connection is terminated, the completion token will be destroyed along with the only
                 // remaining shared pointer to this session...
                 if (!ec)
                 {
-                    (*handler_)(std::span(buffer_.data(), length));
                     start(); // ... and if it's still active another token will be created in the start call.
                 }
             }
