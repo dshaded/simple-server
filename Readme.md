@@ -3,10 +3,16 @@
 It's a tcp server implementation for a specific test task.
 
 ## Build and run instructions:
-Run cmake in the project root directory to build:
+Run CMake in the project root directory to build the server and its tests:
 ```shell
 cmake -DCMAKE_BUILD_TYPE=Debug -B build
-cmake --build ./build --target server
+cmake --build ./build --target server --target tests
+```
+
+To run tests either directly or via CTest use one of:
+```shell
+./build/tests
+cmake --build ./build --target test
 ```
 
 Run the server at port 12345:
