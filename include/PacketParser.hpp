@@ -147,6 +147,7 @@ class PacketParser
     // Compute the crc over command id and the data, compare it against the packet's crc bytes.
     ParserState check_crc_()
     {
+        // todo checksum computation algorithm should be extracted to a parameter for better testability
         boost::crc_16_type crc;
         const unsigned int crc_pos = data_pos + data_length_;
         // Unfortunately, the dequeue is not continuous, so we have to compute the crc one byte at a time.
