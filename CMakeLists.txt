@@ -47,6 +47,9 @@ list(APPEND CMAKE_MODULE_PATH ${Catch2_SOURCE_DIR}/extras)
 
 add_executable(tests
         tests/PacketParserTest.cpp
+        tests/CommandPrinterTest.cpp
+        include/CommandPrinter.hpp
+        source/CommandPrinter.cpp
         include/CommandHandlerStub.hpp
 )
 target_include_directories(tests PRIVATE include)
