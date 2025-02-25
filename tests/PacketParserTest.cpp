@@ -146,4 +146,16 @@ TEST_CASE("PacketParser")
         CHECK(stub.cmd_2 == v8{0x12, 0x12});
         CHECK(stub.cmd_3 == vp{{0x3456, 0x78}});
     }
+
+    SECTION("Nested command")
+    {
+        auto nested = make_packet("\x00\x01\x{03}QWE"s);
+        char nested_len = static_cast<char>(nested.size());
+        auto outer = make_packet("\x00\x01"s + nested_len + nested);
+
+        parser(outer);
+
+        CHECK(stub.call_sequence == vi{1});
+        CHECK(stub.cmd_1 == vs{nested});
+    }
 }
